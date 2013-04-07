@@ -1,4 +1,5 @@
 <?php
+$page_title = "Home";
 require 'header.php';
 ?>
 <h1>Which to pick?</h1>
