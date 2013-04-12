@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<title>Mojo - <?php echo $page_title;?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="Mojo">
+		<link rel="shortcut icon" href="favicon.ico" />
 		<!--[if lt IE 9]>
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -21,11 +21,21 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Mojo</a>
+          <a class="brand" href="index.php">Mojo</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-            </ul>
+              <li class="active"><a href="index.php">Home</a></li>
+				<li><a href="./clients.php" title="List Clients">List Clients</a></li>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					Admin<b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+					<li><a href="./new_client.php" title="Server List">New Client</a></li>
+                </ul>
+                </li>
+			</ul>
+
           </div>
         </div>
       </div>

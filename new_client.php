@@ -1,5 +1,5 @@
 <?php
-$page_title = "Home";
+$page_title = "New Client";
 require 'header.php';
 ?>
 <div class="page-header">
@@ -24,12 +24,12 @@ require 'header.php';
 			<input type="text" class="input tp" name="inputUsername" id="inputUsername" placeholder="Username">    
 		</div>
 	</div>
-
 	<div class="form-actions">
 		<div class="controls submit">
 			<button type="submit" class="btn btn-primary loadingbtn" id="submitbutton">Create User</button>
 		</div>
 	</div>
+</form>
 <?php
 $script = "
 <script type='text/javascript'>
