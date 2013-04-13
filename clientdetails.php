@@ -29,7 +29,14 @@ if ($_GET['msg'] == "Update") {
 }
 }
 ?>
-<form class="form-horizontal" action="" id="client_update">
+<div class="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+    <li><a href="#products" data-toggle="tab">Products</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="details">
+    <form class="form-horizontal" action="" id="client_update">
 	<input value="<?php echo $client_id?>" type="hidden" name="client_id" id="client_id">
 	<div class="control-group">
 		<label class="control-label" for="inputFirstName">First Name</label>
@@ -54,7 +61,13 @@ if ($_GET['msg'] == "Update") {
 			<button type="submit" class="btn btn-primary loadingbtn" id="submitbutton">Update User</button>
 		</div>
 	</div>
-</form>
+	</form>
+    </div>
+      <div class="tab-pane" id="products">
+      <p>Products</p>
+    </div>
+  </div>
+</div>
 <?php
 $script = "
 <script type='text/javascript'>

@@ -24,14 +24,16 @@
           <a class="brand" href="index.php">Mojo</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="index.php">Home</a></li>
+              <li><a href="index.php">Home</a></li>
 				<li><a href="./clients.php" title="List Clients">List Clients</a></li>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 					Admin<b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-					<li><a href="./new_client.php" title="Server List">New Client</a></li>
+					<li><a href="./clients.php" title="List Clients">List Clients</a></li>
+					<li><a href="./servers.php" title="List Servers">List Servers</a></li>
+					<li><a href="./products.php" title="List Products">List Products</a></li>
                 </ul>
                 </li>
 			</ul>
