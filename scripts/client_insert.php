@@ -21,4 +21,4 @@ $result = $db->exec($query);
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>User created:</strong> The user has been created with the submitted details.
 </div>
-<p>Click <a href="new_client.php">here</a> to create a new user</p>
+<p>Click <a href="new_client.php">here</a> to create a new user or click <a href="clients.php">here</a> to view a user listing</p>

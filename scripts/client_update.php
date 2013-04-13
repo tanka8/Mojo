@@ -1,6 +1,6 @@
 <?php 
 require 'sql.php';
-$inputClient_ID = $_POST['inputClient_ID'];
+$inputClientID = $_POST['inputClientID'];
 $inputFirstName = $_POST['inputFirstName'];
 $inputLastName = $_POST['inputLastName'];
 $inputUsername = $_POST['inputUsername'];
@@ -14,11 +14,11 @@ if ($inputFirstName == "" or $inputLastName == "" or $inputUsername == "") {
 	die();
 }
 $time = time();
-$query = 'UPDATE `client_details` SET `first_name` = \''.$inputFirstName.'\', `last_name` = \''.$inputLastName.'\', `updated_time` = \''.$time.'\' WHERE `client_id` = '.$inputClient_ID.';';
+$query = 'UPDATE `client_details` SET `first_name` = \''.$inputFirstName.'\', `last_name` = \''.$inputLastName.'\', `updated_time` = \''.$time.'\' WHERE `client_id` = '.$inputClientID.';';
 $result = $db->exec($query);
 ?>
 <div class="alert alert-success">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>User Update:</strong> The user details have been updated.
 </div>
-<p>Click <a href="clientdetails.php?id=<?php echo $inputClient_ID;?>">here</a> to go back to the client details.</p>
+<p>Click <a href="clientdetails.php?id=<?php echo $inputClientID;?>">here</a> to go back to the client details.</p>

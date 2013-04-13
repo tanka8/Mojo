@@ -24,4 +24,4 @@ $result = $db->exec($query);
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>Server added:</strong> The server has with the submitted details.
 </div>
-<p>Click <a href="new_server.php">here</a> to add a new server.</p>
+<p>Click <a href="new_server.php">here</a> to add a new server or click <a href="servers.php">here</a> to view a server listing</p>

@@ -13,7 +13,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <hr>
 <table class="table table-striped table-bordered table-hover">
 <thead>
-<tr><th>Client ID</th><th>First Name</th><th>Last Name</th><th>Username</th><th>Created</th><th>Last edited</th></tr>
+<tr><th>Client ID</th><th>First Name</th><th>Last Name</th><th>Username</th><th>Created</th><th>Last edited</th><th>Edit</th></tr>
 </thead>
 <?php
 foreach ($results as $value) {

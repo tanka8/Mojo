@@ -21,4 +21,4 @@ $result = $db->exec($query);
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>Product created:</strong> The product has been created with the submitted details.
 </div>
-<p>Click <a href="new_product.php">here</a> to create a new product.</p>
+<p>Click <a href="new_product.php">here</a> to create a new product or click <a href="products.php">here</a> to view a product listing.</p>

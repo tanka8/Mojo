@@ -67,7 +67,7 @@ $('#server_insert').validate({
 		},
         messages: {
             inputServerIP:{
-                remote: 'Username taken. Please try another.'
+                remote: 'Server IP already in database.'
             }
         },
 		submitHandler: function(form) {
