@@ -6,20 +6,31 @@ $inputClientID = $_GET['id'];
 if($inputClientID == '') {
 	header('Location: clients.php');
 }
+//Get Client Details
 $query = "SELECT * FROM `client_details` WHERE `client_id` = '".$inputClientID."'";
 $stmt = $db->query($query);
 $client_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//Check if result is empty and send back to clients page if true
 $row_count = $stmt->rowCount();
 if ($row_count == '0') {
 	header('Location: clients.php');
 	}
-$query = "SELECT * FROM `product_details`";
+//Get list of hosting products for adding hosting product page
+$query = "SELECT * FROM `product_details` WHERE `product_group` = 'shared_hosting'";
 $stmt = $db->query($query);
-$product_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$query = "SELECT * FROM `client_product` WHERE `client_id` = '".$inputClientID."'";
+$hosting_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//Get list of other products for adding other product page
+$query = "SELECT * FROM `product_details` WHERE `product_group` != 'shared_hosting'";
 $stmt = $db->query($query);
-$client_product = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$other_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//Get hosting products for this client
+$query = "SELECT * FROM `client_product` WHERE `client_id` = '".$inputClientID."' AND `product_type` = 'shared_hosting'";
+$stmt = $db->query($query);
+$hosting_product = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//Get other products for this client
+$query = "SELECT * FROM `client_product` WHERE `client_id` = '".$inputClientID."' AND `product_type` != 'shared_hosting'";
+$stmt = $db->query($query);
+$other_product = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="page-header">
 	<h1>Client Details</h1>
@@ -39,8 +50,10 @@ if ($_GET['msg'] == "Update") {
 <div class="tabbable">
   <ul class="nav nav-tabs">
     <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-    <li><a href="#products" data-toggle="tab">Products</a></li>
-	<li><a href="#add_products" data-toggle="tab">Add Product</a></li>
+    <li><a href="#hosting_products" data-toggle="tab">Hosting Products</a></li>
+	<li><a href="#other_product" data-toggle="tab">Other Products</a></li>
+	<li><a href="#add_hosting" data-toggle="tab">Add Hosting</a></li>
+	<li><a href="#add_other" data-toggle="tab">Add Other</a></li>
   </ul>
   <div class="tab-content">
     <div class="tab-pane active" id="details">
@@ -71,15 +84,16 @@ if ($_GET['msg'] == "Update") {
 	</div>
 	</form>
     </div>
-    <div class="tab-pane" id="products">
+    <div class="tab-pane" id="hosting_products">
 		<?php
-		foreach ($client_product as $value) {
+		if((empty($hosting_product)) == 1){echo "<p><strong>Client does not have any hosting products.</strong></p>";}else {
+		foreach ($hosting_product as $value) {
 			//Get Product details from shared_hosting table
 			$query = "SELECT * FROM `shared_hosting` WHERE `client_product_id` = '".$value['client_product_id']."'";
 			$stmt = $db->query($query);
 			$shared_hosting = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			//Get Product details from product_details table
-			$query = "SELECT * FROM `product_details` WHERE `product_id` = '".$value['client_product_id']."'";
+			$query = "SELECT * FROM `product_details` WHERE `product_id` = '".$value['product_id']."'";
 			$stmt = $db->query($query);
 			$client_product_id = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			//Get WHM Server details
@@ -100,13 +114,20 @@ if ($_GET['msg'] == "Update") {
 			require "scripts/uniforum_summary.php";
 			
 			?>
-			<button type="button" class="btn btn-info btn-block" data-toggle="collapse" data-target="#<?php echo $client_product[0]['product_user']; ?>"><h4><?php echo $shared_hosting[0]['domain']." - ".$client_product_id[0]['product_name'];?></h4></button>
-			<div id="<?php echo $client_product[0]['product_user']; ?>" class="collapse in">
+			<button type="button" class="btn <?php if ($whm_suspended == true or $whm_statusmsg == "Account does not exist") {echo "btn-danger";} else {echo "btn-info";}?> btn-block" data-toggle="collapse" data-target="#<?php echo $value['product_user']; ?>"><h4><?php echo $shared_hosting[0]['domain']." - ".$client_product_id[0]['product_name'];?></h4></button>
+			<div id="<?php echo $value['product_user']; ?>" class="collapse">
 			<?php if ($whm_suspended == true) {?>
 			<!-- Suspended Alert -->
 			<div class="alert alert-error">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<strong>Suspended:</strong> Domain suspended on <?php echo $shared_hosting[0]['mail_server'];?> with reason: "<?php echo $whm_suspendreason; ?>" at <?php echo (date('Y-m-d - H:i:s', $whm_suspendtime));?>
+			</div>
+			<?php } ?>
+			<?php if ($whm_statusmsg == "Account does not exist") {?>
+			<!-- Not on server Alert -->
+			<div class="alert alert-error">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<strong>Not on Server:</strong> Domain could not be found on <?php echo $shared_hosting[0]['mail_server'];?> reason returned by server was "<?php echo $whm_statusmsg; ?>"
 			</div>
 			<?php } ?>
 			<!-- DNS Details -->
@@ -125,17 +146,22 @@ if ($_GET['msg'] == "Update") {
 			<!-- CPanel and WHM login -->
 			<h5>Server login:</h5> 
 			<table class="table table-striped table-bordered table-hover">
-			<tr><th>CPanel</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2083/login/?pass=<?php echo $client_product[0]['product_pass']; ?>&user=<?php echo $client_product[0]['product_user']; ?>"><i class="icon-wrench"></i></a></th></tr>
-			<tr><th>WHM</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2087/login/?pass=<?php echo $whm_server[0]['root_password']; ?>&user=root"><i class="icon-wrench"></i></a></th></tr>
+			<tr><th>CPanel</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2083/login/?pass=<?php echo $value['product_pass']; ?>&user=<?php echo $value['product_user']; ?>" target="_blank"><i class="icon-wrench"></i></a></th></tr>
+			<tr><th>WHM</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2087/login/?pass=<?php echo $whm_server[0]['root_password']; ?>&user=root" target="_blank"><i class="icon-wrench"></i></a></th></tr>
 			</table>
 			<!-- Disk Usage -->
+			<?php if ($whm_statusmsg !== "Account does not exist") {?>
 			<h5>Disk Usage:</h5>
-			<div class="progress progress-striped">
+			<div class="progress progress-striped <?php if ($whm_disk_used >= $whm_disk_limit){echo "progress-danger";}else{if(($whm_disk_used+100) >= $whm_disk_limit){echo "progress-warning";}}?>">
 				<div class="bar" style="width: <?php echo (($whm_disk_used/$whm_disk_limit)*100);?>%"></div>
 			</div>
 			<p>Disk Usage: <?php echo $whm_disk_used;?>M / <?php echo $whm_disk_limit;?>M</p>
+			<?php } ?>
 			<!-- Domain details -->
 			<h5>Domain:</h5> 
+			<?php if(isset($domain_blockedip)) {?>
+			<p>Currenly unable to check. We are currently blocked at registry.net.za from IP <?php echo $domain_blockedip; ?> for another <?php echo $domain_timeout; ?>.</p>
+			<?php } else { ?>
 			<table class="table table-striped table-bordered table-hover">
 			<tr><th>Domain renewal</th><th><?php echo $domain_renewal; ?></th></tr>
 			<tr><th>Domain registrar</th><th><?php echo $domain_registrar; ?></th></tr>
@@ -144,20 +170,40 @@ if ($_GET['msg'] == "Update") {
 			<tr><th>Name server <?php echo $i; ?></th><th><?php echo $value; ?></th></tr>
 			<?php $i++; } ?>
 			</table>
+			<?php } ?>
 			</div>
 		<?php
 		}
+		}
 		?>
     </div>
-	<div class="tab-pane" id="add_products">
-		<h4>Add Product</h4>
+	<div class="tab-pane" id="other_product">
+	<?php if((empty($other_product)) == 1){echo "<p><strong>Client does not have any other products.</strong></p>";}else {
+		foreach ($other_product as $value) { 
+		//Get Product details from product_details table
+		$query = "SELECT * FROM `product_details` WHERE `product_id` = '".$value['product_id']."'";
+		$stmt = $db->query($query);
+		$client_product_id = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		?>
+		<button type="button" class="btn btn-block btn-primary" data-toggle="collapse" data-target="#<?php echo $value['product_user']; ?>"><h4><?php echo $client_product_id[0]['product_name']." - ".$value['product_user'];?></h4></button>
+		<div id="<?php echo $value['product_user']; ?>" class="collapse">
+		<table class="table table-hover">
+		<tr><th><strong>Username</strong></th><th><?php echo $value['product_user']; ?></th></tr>
+		<tr><th><strong>Password:</strong></th><th><?php echo $value['product_pass']; ?></th></tr>
+		</table>
+		</div>
+		
+	<?php } } ?>
+	</div>
+	<div class="tab-pane" id="add_hosting">
+		<h4>Add Hosting Product</h4>
 		<form class="form-horizontal" action="" id="product_add">
 			<input value="<?php echo $inputClientID?>" type="hidden" name="inputClientID" id="inputClientID">
 			<div class="control-group">
 				<label class="control-label" for="inputProductID">Product</label>
 				<div class="controls">
 				<select class="input tp" name="inputProductID" id="inputProductID">
-				<?php foreach ($product_details as $value) {echo "<option value='".$value['product_id']."'>".$value['product_name']."</option>";}?>
+				<?php foreach ($hosting_list as $value) {echo "<option value='".$value['product_id']."'>".$value['product_name']."</option>";}?>
 				</select>
 				</div>
 			</div>
@@ -193,7 +239,38 @@ if ($_GET['msg'] == "Update") {
 			</div>
 			<div class="form-actions">
 				<div class="controls">
-					<button class="btn btn-primary productloadingbtn" id="submitbutton">Update User</button>
+					<button class="btn btn-primary productloadingbtn" id="submitbutton">Add Hosting Product</button>
+				</div>
+			</div>
+		</form>
+    </div>
+	<div class="tab-pane" id="add_other">
+		<h4>Add Other Product</h4>
+		<form class="form-horizontal" action="" id="other_add">
+			<input value="<?php echo $inputClientID?>" type="hidden" name="inputOtherClientID" id="inputOtherClientID">
+			<div class="control-group">
+				<label class="control-label" for="inputOtherProductID">Product</label>
+				<div class="controls">
+				<select class="input tp" name="inputOtherProductID" id="inputOtherProductID">
+				<?php foreach ($other_list as $value) {echo "<option value='".$value['product_id']."'>".$value['product_name']."</option>";}?>
+				</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputOtherProductUser">Product Username</label>
+				<div class="controls">
+					<input type="text" class="input tp" name="inputOtherProductUser" id="inputOtherProductUser" placeholder="Product Username">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputOtherProductPass">Product Password</label>
+				<div class="controls">
+					<input type="text" class="input tp" name="inputOtherProductPass" id="inputOtherProductPass" placeholder="Product Password">
+				</div>
+			</div>
+			<div class="form-actions">
+				<div class="controls">
+					<button class="btn btn-primary otherproductloadingbtn" id="submitbutton">Add Other Product</button>
 				</div>
 			</div>
 		</form>
@@ -230,7 +307,7 @@ $.ajax({
 		$('#client_update').html(response)
         }
  });
- }
+}
 $('#product_add').validate({
         rules: {
 			inputProductUser: {required: true, maxlength: 255},
@@ -277,6 +354,34 @@ $.ajax({
 	success: function(response){
 		$('#product_add').html(response)
 	},
+ });
+}
+$('#other_add').validate({
+        rules: {
+			inputOtherProductUser: {required: true, maxlength: 255},
+			inputOtherProductPass: {required: true, maxlength: 255}
+        },
+		highlight: function(label) {
+			$(label).closest('.control-group').addClass('error');
+		},
+		success: function(label) {
+			label
+			.addClass('valid')
+			.closest('.control-group').addClass('success');
+		},
+		submitHandler: function(form) {
+		$('.otherproductloadingbtn').button('loading');
+		addotherfunct();
+		}
+});
+function addotherfunct() {
+$.ajax({
+	type: \"POST\",
+	url: \"scripts/product_other_add.php\",
+	data: {inputOtherClientID: document.getElementById(\"inputOtherClientID\").value, inputOtherProductID: document.getElementById(\"inputOtherProductID\").value, inputOtherProductUser: document.getElementById(\"inputOtherProductUser\").value, inputOtherProductPass: document.getElementById(\"inputOtherProductPass\").value},
+	success: function(response){
+		$('#other_add').html(response)
+        }
  });
  }
 </script>";

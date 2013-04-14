@@ -2,7 +2,14 @@
 <footer class="footer">
 	<div class="container">
 		<hr>
-		<p>&copy;<?php echo date("Y"); ?> - All rights reserved</p>
+		<?php
+		$mtime = microtime(); 
+		$mtime = explode(" ",$mtime); 
+		$mtime = $mtime[1] + $mtime[0]; 
+		$endtime = $mtime; 
+		$totaltime = round(($endtime - $starttime), 4);
+		?>
+		<p>&copy;<?php echo date("Y"); ?> - All rights reserved<span class="pull-right">Page created in <?php echo $totaltime;?> seconds.</span></p>
 	</div>
 </footer>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>

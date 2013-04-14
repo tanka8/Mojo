@@ -26,6 +26,7 @@ foreach ($results as $value) {
 <th><?php echo (date('Y-m-d - H:i:s', $value['updated_time']));?></th>
 <th><?php if($value['updated_time'] == $value['created_time']) {echo "Never edited";} else {echo (date('Y-m-d - H:i:s', $value['created_time']));}?></th>
 <th><a href="clientdetails.php?id=<?php echo $value['client_id']; ?>"><i class="icon-edit"></i></a></th>
+</tr>
 <?php
 }
 ?>

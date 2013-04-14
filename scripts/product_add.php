@@ -17,9 +17,15 @@ if ($inputClientID == "" or $inputProductID == "" or $inputProductUser == "" or 
 <?php
 	die();
 }
+
+$query = 'SELECT * FROM  `product_details` WHERE  `product_id` ='.$inputProductID;
+$stmt = $db->query($query);
+$product_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$product_type = $product_details[0]['product_group'];
 $time = time();
 
-$query = 'INSERT INTO `client_product` (`client_product_id`, `client_id`, `product_id`, `product_user`, `product_pass`, `created_time`, `updated_time`) VALUES (NULL, \''.$inputClientID.'\', \''.$inputProductID.'\', \''.$inputProductUser.'\', \''.$inputProductPass.'\', \''.$time.'\', \''.$time.'\')';
+$query = 'INSERT INTO `client_product` (`client_product_id`, `client_id`, `product_id`, `product_type`, `product_user`, `product_pass`, `created_time`, `updated_time`) VALUES (NULL, \''.$inputClientID.'\', \''.$inputProductID.'\', \''.$product_type.'\', \''.$inputProductUser.'\', \''.$inputProductPass.'\', \''.$time.'\', \''.$time.'\')';
 $result = $db->exec($query);
 $insertId = $db->lastInsertId();
 
