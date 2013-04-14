@@ -44,7 +44,7 @@ $root = $value['root_password'];
 <th><?php echo $value['server_hostname'];?></th>
 <th><?php echo $value['server_ip'];?></th>
 <th><a href="scripts/whm_keycheck.php?server_id=<?php echo $value['server_id'];?>"><i class="icon-question-sign"></i></a></th>
-<th><a href="https://<?php echo $value['server_hostname'];?>:2087/login?user=root&pass=<?php echo htmlentities($root);?>"><i class="icon-check"></i></a></th>
+<th><a href="https://<?php echo $value['server_hostname'];?>:2087/login?user=root&amp;pass=<?php echo htmlentities($root);?>"><i class="icon-check"></i></a></th>
 <th><a href="serverdetails.php?id=<?php echo $value['server_id']; ?>"><i class="icon-edit"></i></a></th>
 <?php
 }
