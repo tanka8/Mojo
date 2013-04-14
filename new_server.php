@@ -5,7 +5,7 @@ require 'header.php';
 <div class="page-header">
 	<h1>Add a server</h1>
 </div>
-<form class="form-horizontal" action="" id="server_insert">
+<form class="form-horizontal" action="#" id="server_insert">
 	<div class="control-group">
 		<label class="control-label" for="inputServerName">Server Name</label>
 		<div class="controls">

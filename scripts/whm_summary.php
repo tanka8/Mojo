@@ -25,6 +25,8 @@ $whm_suspended = true;
 $whm_suspendreason = $array[0]->suspendreason;
 $whm_suspendtime = $array[0]->suspendtime;}
 else {$whm_suspended = false;}
+$whm_plan = $array[0]->plan;
+$whm_added = $array[0]->unix_startdate;
 $whm_disk_used = str_replace('', 'M', str_replace('M', '', $array[0]->diskused));
 $whm_disk_limit = str_replace('', 'M', str_replace('M', '', $array[0]->disklimit));
 }

@@ -1,6 +1,6 @@
 <?php 
 require 'sql.php';
-$inputClientID = $_POST['inputClientID'];
+$inputHostClientID = $_POST['inputHostClientID'];
 $inputProductID = $_POST['inputProductID'];
 $inputProductUser = $_POST['inputProductUser'];
 $inputProductPass = $_POST['inputProductPass'];
@@ -8,7 +8,7 @@ $inputDomain = $_POST['inputDomain'];
 $inputHostingServer = $_POST['inputHostingServer'];
 $inputMailServer = $_POST['inputMailServer'];
 
-if ($inputClientID == "" or $inputProductID == "" or $inputProductUser == "" or $inputProductPass == "" or $inputDomain == "" or $inputHostingServer == "" or $inputMailServer == "") {
+if ($inputHostClientID == "" or $inputProductID == "" or $inputProductUser == "" or $inputProductPass == "" or $inputDomain == "" or $inputHostingServer == "" or $inputMailServer == "") {
 ?>
 <div class="alert">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -25,7 +25,7 @@ $product_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $product_type = $product_details[0]['product_group'];
 $time = time();
 
-$query = 'INSERT INTO `client_product` (`client_product_id`, `client_id`, `product_id`, `product_type`, `product_user`, `product_pass`, `created_time`, `updated_time`) VALUES (NULL, \''.$inputClientID.'\', \''.$inputProductID.'\', \''.$product_type.'\', \''.$inputProductUser.'\', \''.$inputProductPass.'\', \''.$time.'\', \''.$time.'\')';
+$query = 'INSERT INTO `client_product` (`client_product_id`, `client_id`, `product_id`, `product_type`, `product_user`, `product_pass`, `created_time`, `updated_time`) VALUES (NULL, \''.$inputHostClientID.'\', \''.$inputProductID.'\', \''.$product_type.'\', \''.$inputProductUser.'\', \''.$inputProductPass.'\', \''.$time.'\', \''.$time.'\')';
 $result = $db->exec($query);
 $insertId = $db->lastInsertId();
 

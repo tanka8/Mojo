@@ -5,7 +5,7 @@ require 'header.php';
 <div class="page-header">
 	<h1>New Product</h1>
 </div>
-<form class="form-horizontal" action="" id="product_insert">
+<form class="form-horizontal" action="#" id="product_insert">
 	<div class="control-group">
 		<label class="control-label" for="inputProductName">Product Name</label>
 		<div class="controls">

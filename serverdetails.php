@@ -29,7 +29,7 @@ if ($_GET['msg'] == "Update") {
 }
 }
 ?>
-<form class="form-horizontal" action="" id="server_update">
+<form class="form-horizontal" action="#" id="server_update">
 	<input value="<?php echo $server_id?>" type="hidden" name="inputServerID" id="inputServerID">
 	<div class="control-group">
 		<label class="control-label" for="inputServerName">Server Name</label>

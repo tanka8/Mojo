@@ -57,7 +57,7 @@ if ($_GET['msg'] == "Update") {
   </ul>
   <div class="tab-content">
     <div class="tab-pane active" id="details">
-    <form class="form-horizontal" action="" id="client_update">
+    <form class="form-horizontal" action="#" id="client_update">
 	<input value="<?php echo $inputClientID?>" type="hidden" name="inputClientID" id="inputClientID">
 	<div class="control-group">
 		<label class="control-label" for="inputFirstName">First Name</label>
@@ -114,7 +114,7 @@ if ($_GET['msg'] == "Update") {
 			require "scripts/uniforum_summary.php";
 			
 			?>
-			<button type="button" class="btn <?php if ($whm_suspended == true or $whm_statusmsg == "Account does not exist") {echo "btn-danger";} else {echo "btn-info";}?> btn-block" data-toggle="collapse" data-target="#<?php echo $value['product_user']; ?>"><h4><?php echo $shared_hosting[0]['domain']." - ".$client_product_id[0]['product_name'];?></h4></button>
+			<button type="button" class="btn <?php if ($whm_suspended == true or $whm_statusmsg == "Account does not exist") {echo "btn-danger";} else {echo "btn-info";}?> btn-block" data-toggle="collapse" data-target="#<?php echo $value['product_user']; ?>"><strong><?php echo $shared_hosting[0]['domain']." - ".$client_product_id[0]['product_name'];?></strong></button>
 			<div id="<?php echo $value['product_user']; ?>" class="collapse">
 			<?php if ($whm_suspended == true) {?>
 			<!-- Suspended Alert -->
@@ -131,7 +131,7 @@ if ($_GET['msg'] == "Update") {
 			</div>
 			<?php } ?>
 			<!-- DNS Details -->
-			<h5>DNS Records</h5>
+			<h4>DNS Records</h4>
 			<table class="table table-striped table-bordered table-hover">
 			<thead>
 			<tr><th>Record</th><th>Target</th></tr>
@@ -144,21 +144,24 @@ if ($_GET['msg'] == "Update") {
 			<?php } ?>
 			</table>
 			<!-- CPanel and WHM login -->
-			<h5>Server login:</h5> 
+			<h4>Server login:</h4> 
 			<table class="table table-striped table-bordered table-hover">
-			<tr><th>CPanel</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2083/login/?pass=<?php echo $value['product_pass']; ?>&user=<?php echo $value['product_user']; ?>" target="_blank"><i class="icon-wrench"></i></a></th></tr>
-			<tr><th>WHM</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2087/login/?pass=<?php echo $whm_server[0]['root_password']; ?>&user=root" target="_blank"><i class="icon-wrench"></i></a></th></tr>
+			<tr><th>CPanel</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2083/login/?pass=<?php echo $value['product_pass']; ?>&amp;user=<?php echo $value['product_user']; ?>" target="_blank"><i class="icon-wrench"></i></a></th></tr>
+			<tr><th>WHM</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2087/login/?pass=<?php echo $whm_server[0]['root_password']; ?>&amp;user=root" target="_blank"><i class="icon-wrench"></i></a></th></tr>
 			</table>
 			<!-- Disk Usage -->
 			<?php if ($whm_statusmsg !== "Account does not exist") {?>
-			<h5>Disk Usage:</h5>
+			<h4>Server details:</h4>
+			<p><strong>WHM Server:</strong> <?php echo $shared_hosting[0]['mail_server']; ?></p>
+			<p><strong>Disk Usage:</strong> <?php echo $whm_disk_used;?>MB / <?php echo $whm_disk_limit;?>MB</p>
 			<div class="progress progress-striped <?php if ($whm_disk_used >= $whm_disk_limit){echo "progress-danger";}else{if(($whm_disk_used+100) >= $whm_disk_limit){echo "progress-warning";}}?>">
 				<div class="bar" style="width: <?php echo (($whm_disk_used/$whm_disk_limit)*100);?>%"></div>
 			</div>
-			<p>Disk Usage: <?php echo $whm_disk_used;?>M / <?php echo $whm_disk_limit;?>M</p>
+			<p><strong>Hosting package:</strong> <?php echo $whm_plan; ?></p>
+			<p><strong>Date added:</strong> <?php echo date('Y-m-d | H:i:s',$whm_added) ?></p>
 			<?php } ?>
 			<!-- Domain details -->
-			<h5>Domain:</h5> 
+			<h4>Domain:</h4> 
 			<?php if(isset($domain_blockedip)) {?>
 			<p>Currenly unable to check. We are currently blocked at registry.net.za from IP <?php echo $domain_blockedip; ?> for another <?php echo $domain_timeout; ?>.</p>
 			<?php } else { ?>
@@ -185,7 +188,7 @@ if ($_GET['msg'] == "Update") {
 		$stmt = $db->query($query);
 		$client_product_id = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		?>
-		<button type="button" class="btn btn-block btn-primary" data-toggle="collapse" data-target="#<?php echo $value['product_user']; ?>"><h4><?php echo $client_product_id[0]['product_name']." - ".$value['product_user'];?></h4></button>
+		<button type="button" class="btn btn-block btn-primary" data-toggle="collapse" data-target="#<?php echo $value['product_user']; ?>"><strong><?php echo $client_product_id[0]['product_name']." - ".$value['product_user'];?></strong></button>
 		<div id="<?php echo $value['product_user']; ?>" class="collapse">
 		<table class="table table-hover">
 		<tr><th><strong>Username</strong></th><th><?php echo $value['product_user']; ?></th></tr>
@@ -197,8 +200,8 @@ if ($_GET['msg'] == "Update") {
 	</div>
 	<div class="tab-pane" id="add_hosting">
 		<h4>Add Hosting Product</h4>
-		<form class="form-horizontal" action="" id="product_add">
-			<input value="<?php echo $inputClientID?>" type="hidden" name="inputClientID" id="inputClientID">
+		<form class="form-horizontal" action="#" id="product_add">
+			<input value="<?php echo $inputClientID?>" type="hidden" name="inputHostClientID" id="inputHostClientID">
 			<div class="control-group">
 				<label class="control-label" for="inputProductID">Product</label>
 				<div class="controls">
@@ -239,14 +242,14 @@ if ($_GET['msg'] == "Update") {
 			</div>
 			<div class="form-actions">
 				<div class="controls">
-					<button class="btn btn-primary productloadingbtn" id="submitbutton">Add Hosting Product</button>
+					<button class="btn btn-primary productloadingbtn" id="productsubmitbutton">Add Hosting Product</button>
 				</div>
 			</div>
 		</form>
     </div>
 	<div class="tab-pane" id="add_other">
 		<h4>Add Other Product</h4>
-		<form class="form-horizontal" action="" id="other_add">
+		<form class="form-horizontal" action="#" id="other_add">
 			<input value="<?php echo $inputClientID?>" type="hidden" name="inputOtherClientID" id="inputOtherClientID">
 			<div class="control-group">
 				<label class="control-label" for="inputOtherProductID">Product</label>
@@ -270,7 +273,7 @@ if ($_GET['msg'] == "Update") {
 			</div>
 			<div class="form-actions">
 				<div class="controls">
-					<button class="btn btn-primary otherproductloadingbtn" id="submitbutton">Add Other Product</button>
+					<button class="btn btn-primary otherproductloadingbtn" id="otherproductsubmitbutton">Add Other Product</button>
 				</div>
 			</div>
 		</form>
@@ -343,7 +346,7 @@ $.ajax({
 	type: \"POST\",
 	url: \"scripts/product_add.php\",
 	data: {
-	inputClientID: document.getElementById(\"inputClientID\").value,
+	inputHostClientID: document.getElementById(\"inputHostClientID\").value,
 	inputProductID: document.getElementById(\"inputProductID\").value,
 	inputProductUser: document.getElementById(\"inputProductUser\").value,
 	inputProductPass: document.getElementById(\"inputProductPass\").value,

@@ -29,7 +29,7 @@ if ($_GET['msg'] == "Update") {
 }
 }
 ?>
-<form class="form-horizontal" action="" id="product_update">
+<form class="form-horizontal" action="#" id="product_update">
 	<input value="<?php echo $product_id?>" type="hidden" name="inputProductID" id="inputProductID">
 	<div class="control-group">
 		<label class="control-label" for="inputProductName">Product Name</label>

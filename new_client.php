@@ -5,7 +5,7 @@ require 'header.php';
 <div class="page-header">
 	<h1>Create a new client</h1>
 </div>
-<form class="form-horizontal" action="" id="client_insert">
+<form class="form-horizontal" action="#" id="client_insert">
 	<div class="control-group">
 		<label class="control-label" for="inputFirstName">First Name</label>
 		<div class="controls">
