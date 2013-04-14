@@ -72,7 +72,6 @@ if ($_GET['msg'] == "Update") {
 	</form>
     </div>
     <div class="tab-pane" id="products">
-		<h3>Products</h3>
 		<?php
 		foreach ($client_product as $value) {
 			//Get Product details from shared_hosting table
@@ -97,9 +96,20 @@ if ($_GET['msg'] == "Update") {
 			//Get hostname of resolved A records
 			$DNS_Mail_Host = gethostbyaddr($DNS_Mail[0]['ip']);
 			$DNS_A_Host = gethostbyaddr($DNS_A[0]['ip']);
+			//Get domain details
+			require "scripts/uniforum_summary.php";
 			
 			?>
-			<h4><?php echo $shared_hosting[0]['domain']." - ".$client_product_id[0]['product_name'];?></h4>
+			<button type="button" class="btn btn-info btn-block" data-toggle="collapse" data-target="#<?php echo $client_product[0]['product_user']; ?>"><h4><?php echo $shared_hosting[0]['domain']." - ".$client_product_id[0]['product_name'];?></h4></button>
+			<div id="<?php echo $client_product[0]['product_user']; ?>" class="collapse in">
+			<?php if ($whm_suspended == true) {?>
+			<!-- Suspended Alert -->
+			<div class="alert alert-error">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<strong>Suspended:</strong> Domain suspended on <?php echo $shared_hosting[0]['mail_server'];?> with reason: "<?php echo $whm_suspendreason; ?>" at <?php echo (date('Y-m-d - H:i:s', $whm_suspendtime));?>
+			</div>
+			<?php } ?>
+			<!-- DNS Details -->
 			<h5>DNS Records</h5>
 			<table class="table table-striped table-bordered table-hover">
 			<thead>
@@ -112,15 +122,28 @@ if ($_GET['msg'] == "Update") {
 			<tr><th>NS Record:</th><th><?php echo $NS['target'];?></th>
 			<?php } ?>
 			</table>
-			
+			<!-- CPanel and WHM login -->
 			<h5>Server login:</h5> 
 			<table class="table table-striped table-bordered table-hover">
 			<tr><th>CPanel</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2083/login/?pass=<?php echo $client_product[0]['product_pass']; ?>&user=<?php echo $client_product[0]['product_user']; ?>"><i class="icon-wrench"></i></a></th></tr>
 			<tr><th>WHM</th><th><a href="https://<?php echo $shared_hosting[0]['mail_server'];?>:2087/login/?pass=<?php echo $whm_server[0]['root_password']; ?>&user=root"><i class="icon-wrench"></i></a></th></tr>
 			</table>
+			<!-- Disk Usage -->
 			<h5>Disk Usage:</h5>
 			<div class="progress progress-striped">
 				<div class="bar" style="width: <?php echo (($whm_disk_used/$whm_disk_limit)*100);?>%"></div>
+			</div>
+			<p>Disk Usage: <?php echo $whm_disk_used;?>M / <?php echo $whm_disk_limit;?>M</p>
+			<!-- Domain details -->
+			<h5>Domain:</h5> 
+			<table class="table table-striped table-bordered table-hover">
+			<tr><th>Domain renewal</th><th><?php echo $domain_renewal; ?></th></tr>
+			<tr><th>Domain registrar</th><th><?php echo $domain_registrar; ?></th></tr>
+			<tr><th>Domain status</th><th><?php echo $domain_status; ?></th></tr>
+			<?php $i=1; foreach ($domain_nameservers as $value) {?>
+			<tr><th>Name server <?php echo $i; ?></th><th><?php echo $value; ?></th></tr>
+			<?php $i++; } ?>
+			</table>
 			</div>
 		<?php
 		}

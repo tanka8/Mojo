@@ -17,7 +17,11 @@ curl_close($curl);
 $obj = json_decode($whm_summary);
 $array = $obj->{'acct'};
 
-if ((str_replace('M', '', $array[0]->suspended)) == 1) {$whm_suspended = true;} else {$whm_suspended = false;}
+if (($array[0]->suspended) == 1) {
+$whm_suspended = true;
+$whm_suspendreason = $array[0]->suspendreason;
+$whm_suspendtime = $array[0]->suspendtime;}
+else {$whm_suspended = false;}
 $whm_disk_used = str_replace('', 'M', str_replace('M', '', $array[0]->diskused));
 $whm_disk_limit = str_replace('', 'M', str_replace('M', '', $array[0]->disklimit));
 ?>
